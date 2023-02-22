@@ -35,8 +35,8 @@ jobs:
         with:
           ref: 'main'
           token: '${{ github.token }}'
-          environment-url: https://telerik.github.io/kendo-design-system/${{github.ref_name}}
-          environment: ${{github.ref_name}}
+          environment-url: https://telerik.github.io/kendo-design-system/dev
+          environment: 'staging'
           initial-status: 'success'
       - name: Cleanup
         run: git clean -xdf
