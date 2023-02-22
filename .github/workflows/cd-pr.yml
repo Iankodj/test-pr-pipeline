@@ -3,9 +3,6 @@ on:
   pull_request:
     types: [opened, reopened, synchronize, closed]
 
-defaults:
-  runs-on: ubuntu-latest
-
 jobs:
   delete-pr:
     if: github.event.action == 'closed'
