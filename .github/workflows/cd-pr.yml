@@ -13,9 +13,9 @@ jobs:
     - name: Check out repository
         uses: actions/checkout@v3
         with:
-          ref: gh-pages
           fetch-depth: 2
     - name: Delete staging for branch
+      if: github.event.ref_type == 'branch'
       run: |
         echo 'Removing ./PR-${{github.event.number}}'
         rm -rf ./PR-${{github.event.number}}
@@ -25,10 +25,6 @@ jobs:
         git add .
         git commit -m "chore: Removed PR-${{github.event.number}}"
         git push
-    - uses: strumwolf/delete-deployment-environment@v2
-      with:
-        token: ${{ github.token }}
-        environment: PR-${{github.event.number}}
   build-pr:
     if: github.event.action != 'closed'
     runs-on: ubuntu-latest
