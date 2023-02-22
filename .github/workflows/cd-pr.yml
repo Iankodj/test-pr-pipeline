@@ -1,0 +1,44 @@
+name: Continuos PR Deployment
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Show context
+        run: echo "${{toJson(github)}}"
+      # - name: Cancel previous runs
+      #   uses: styfle/cancel-workflow-action@0.11.0
+      #   with:
+      #     access_token: ${{ github.token }}
+      # - name: Check out repository
+      #   uses: actions/checkout@v3
+      #   with:
+      #     fetch-depth: 2
+      # - uses: actions/setup-node@v3
+      #   with:
+      #     node-version: 18
+      # - name: Install node-modules
+      #   run: npm install
+      # - name: Build
+      #   run: npm run build
+      # - name: Publish demos
+      #   run: |
+      #     git remote set-url origin https://git:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
+      #     git config user.name github-actions-bot
+      #     git config user.email support+actions@github.com
+      #     npx gh-pages -d dist/test-pr-pipeline --dotfiles -e dev
+      #   env:
+      #     GITHUB_TOKEN: ${{ github.token }}
+      # - uses: chrnorm/deployment-action@v2
+      #   name: Create GitHub deployment
+      #   with:
+      #     ref: 'main'
+      #     token: '${{ github.token }}'
+      #     environment-url: https://telerik.github.io/kendo-design-system/${{github.ref_name}}
+      #     environment: ${{github.ref_name}}
+      #     initial-status: 'success'
+      # - name: Cleanup
+      #   run: git clean -xdf
