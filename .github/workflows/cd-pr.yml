@@ -9,11 +9,13 @@ defaults:
 jobs:
   delete-pr:
     if: github.event.action == 'closed'
+    runs-on: ubuntu-latest
     steps:
       - name: Show context
         run: echo "${{toJson(github)}}"
   build-pr:
     if: github.event.action != 'closed'
+    runs-on: ubuntu-latest
     steps:
       - name: Show context
         run: echo "${{toJson(github)}}"
