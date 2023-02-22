@@ -25,6 +25,8 @@ jobs:
       - name: Publish demos
         run: |
           git remote set-url origin https://git:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
+          git config user.name github-actions-bot 
+          git config user.email support+actions@github.com
           npx gh-pages -d dist/test-pr-pipeline --dotfiles -e dev
         env:
           GITHUB_TOKEN: ${{ github.token }}
