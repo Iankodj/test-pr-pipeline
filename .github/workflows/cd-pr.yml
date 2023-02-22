@@ -10,21 +10,25 @@ jobs:
     steps:
       - name: Show context
         run: echo "${{toJson(github)}}"
-    - name: Check out repository
-        uses: actions/checkout@v3
+      - name: Check out repository
+          uses: actions/checkout@v3
+          with:
+            ref: gh-pages
+            fetch-depth: 2
+      - name: Delete staging for branch
+        run: |
+          echo 'Removing ./PR-${{github.event.number}}'
+          rm -rf ./PR-${{github.event.number}}
+          git remote set-url origin https://git:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
+          git config user.name github-actions-bot 
+          git config user.email support+actions@github.com
+          git add .
+          git commit -m "chore: Removed PR-${{github.event.number}}"
+          git push
+      - uses: strumwolf/delete-deployment-environment@v2
         with:
-          fetch-depth: 2
-    - name: Delete staging for branch
-      if: github.event.ref_type == 'branch'
-      run: |
-        echo 'Removing ./PR-${{github.event.number}}'
-        rm -rf ./PR-${{github.event.number}}
-        git remote set-url origin https://git:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
-        git config user.name github-actions-bot 
-        git config user.email support+actions@github.com
-        git add .
-        git commit -m "chore: Removed PR-${{github.event.number}}"
-        git push
+          token: ${{ github.token }}
+          environment: PR-${{github.event.number}}
   build-pr:
     if: github.event.action != 'closed'
     runs-on: ubuntu-latest
