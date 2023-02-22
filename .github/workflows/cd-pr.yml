@@ -29,7 +29,7 @@ jobs:
         uses: strumwolf/delete-deployment-environment@v2
         with:
           token: ${{ github.token }}
-          environment: PR-${{github.event.number}}
+          environment: PR-Preview
           ref: ${{github.head_ref}}
           onlyRemoveDeployments: true
   build-pr:
@@ -67,7 +67,7 @@ jobs:
           ref: '${{github.head_ref}}'
           token: '${{ github.token }}'
           environment-url: https://telerik.github.io/kendo-design-system/PR-${{github.event.number}}
-          environment: 'PR-${{github.event.number}}'
+          environment: 'PR-Preview'
           initial-status: 'success'
       - name: Cleanup
         run: git clean -xdf
