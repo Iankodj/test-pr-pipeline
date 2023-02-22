@@ -1,11 +1,19 @@
 name: Continuos PR Deployment
 on:
   pull_request:
-    types: [opened, reopened, synchronize]
+    types: [opened, reopened, synchronize, closed]
+
+defaults:
+  runs-on: ubuntu-latest
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  delete-pr:
+    if: github.event.action == 'closed'
+    steps:
+      - name: Show context
+        run: echo "${{toJson(github)}}"
+  build-pr:
+    if: github.event.action != 'closed'
     steps:
       - name: Show context
         run: echo "${{toJson(github)}}"
