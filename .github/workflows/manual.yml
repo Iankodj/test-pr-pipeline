@@ -1,24 +1,19 @@
-name: '[manual] Delete PR staging'
+name: 'TEST'
 
 on:
   workflow_dispatch:
-    inputs:
-      deployment:
-        description: 'Deploynment:'
-        required: true
-      ref:
-        description: 'Ref:'
-        required: true
 
 jobs:
   test:
     runs-on: ubuntu-latest
-    permissions: write-all
+
     steps:
-      - name: Delete Environment
-        uses: strumwolf/delete-deployment-environment@v2
+      - name: Check out branch
+        uses: actions/checkout@v3
         with:
-          token: ${{ github.token }}
-          environment: ${{github.event.inputs.deployment}}
-          ref: ${{github.event.inputs.ref}}
-          onlyRemoveDeployments: true
+          fetch-depth: 0 # Fetch all branches
+          cache: 'yarn'
+      - name: Install node-modules
+        run: yarn install --frozen-lockfile
+      - name: build
+        run: yarn build
