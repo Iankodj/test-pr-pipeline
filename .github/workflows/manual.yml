@@ -10,8 +10,9 @@ jobs:
     steps:
       - name: Check out branch
         uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
-          fetch-depth: 0 # Fetch all branches
+          node-version: 16
           cache: 'yarn'
       - name: Install node-modules
         run: yarn install --frozen-lockfile
