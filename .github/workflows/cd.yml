@@ -21,11 +21,12 @@ jobs:
         uses: tj-actions/changed-files@v35
         with:
           files: |
-            **/*.*
-          files_ignore: docs/** # Alternatively using: `docs`
+            **/**/*
+          files_ignore: docs
       - name: Run
         run: |
-          echo "Changes: ${{ steps.changed-files-excluded.outputs.any_changed == 'true' }}"
+          echo "Changes: ${{ steps.no-docs-files.outputs.any_changed == 'true' }}"
+          echo "List all the files that have changed: ${{ steps.no-docs-files.outputs.all_changed_files }}"
       # - name: Install node-modules
       #   run: yarn install --frozen-lockfile
       # - name: Use shared Nx Cache
