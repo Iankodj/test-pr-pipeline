@@ -8,7 +8,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Show context
-        run: echo "${{toJson(github)}}"
+        run: |
+          echo "${{github.event.sha}}"
+          echo "${{toJson(github)}}"
       - name: Check out branch
         uses: actions/checkout@v3
       - uses: actions/setup-node@v3
