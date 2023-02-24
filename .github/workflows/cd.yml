@@ -21,7 +21,7 @@ jobs:
         uses: tj-actions/changed-files@v35
         with:
           files: |
-            **/**/*
+            **/*
           files_ignore: docs
       - name: Run
         run: |
