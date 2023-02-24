@@ -27,9 +27,9 @@ jobs:
           CACHE_NAME: cache-nx
         with:
           path: ./node_modules/.cache/nx
-          key: ${{ runner.os }}-build-cache-${{github.event.number}}-${{ hashFiles('yarn.lock') }}-${{github.run_id}}
+          key: ${{ runner.os }}-build-cache-${{ hashFiles('yarn.lock') }}-${{github.event.number}}-${{github.run_id}}
           restore-keys: |
-            ${{ runner.os }}-build-cache-${{github.event.number}}-${{ hashFiles('yarn.lock') }}
+            ${{ runner.os }}-build-cache-${{ hashFiles('yarn.lock') }}-${{github.event.number}}
             ${{ runner.os }}-build-cache-${{ hashFiles('yarn.lock') }}
       - name: build
         run: yarn build
