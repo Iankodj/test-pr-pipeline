@@ -1,15 +1,17 @@
 name: Continuos PR Deployment
 on:
   pull_request:
-    types: [opened, reopened, synchronize, closed]
+    types: [opened, reopened, synchronize]
 
 jobs:
-  delete-pr:
-    if: github.event.action == 'closed'
+  pr:
     runs-on: ubuntu-latest
     steps:
       - name: Show context
-        run: echo "${{toJson(github)}}"
+        run: |
+          echo "${{github.sha}}"
+          echo "${{github.run_id}}"
+          echo "${{toJson(github)}}"
       - name: Check out branch
         uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -25,9 +27,9 @@ jobs:
           CACHE_NAME: cache-nx
         with:
           path: ./node_modules/.cache/nx
-          key: ${{ runner.os }}-build-nx-${{ hashFiles('yarn.lock') }}-${{github.event.number}}-${{ hashFiles('node_modules/.cache/nx/nxdeps.json') }}
+          key: ${{ runner.os }}-build-cache-${{ hashFiles('yarn.lock') }}-${{github.event.number}}-${{github.run_id}}
           restore-keys: |
-            ${{ runner.os }}-build-nx-${{ hashFiles('yarn.lock') }}-${{github.event.number}}
-            ${{ runner.os }}-build-nx-${{ hashFiles('yarn.lock') }}
+            ${{ runner.os }}-build-cache-${{ hashFiles('yarn.lock') }}-${{github.event.number}}
+            ${{ runner.os }}-build-cache-${{ hashFiles('yarn.lock') }}
       - name: build
         run: yarn build
