@@ -15,18 +15,28 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16
-          cache: 'yarn'
-      - name: Install node-modules
-        run: yarn install --frozen-lockfile
-      - name: Use shared Nx Cache
-        id: cache-nx
-        uses: actions/cache@v3
-        env:
-          CACHE_NAME: cache-nx
+          # cache: 'yarn'\
+      - name: Check changed files
+        id: no-docs-files
+        uses: tj-actions/changed-files@v35
         with:
-          path: ./node_modules/.cache/nx
-          key: ${{ runner.os }}-build-cache-${{ hashFiles('yarn.lock') }}-${{github.run_id}}
-          restore-keys: |
-            ${{ runner.os }}-build-cache-${{ hashFiles('yarn.lock') }}
-      - name: build
-        run: yarn build
+          files: |
+            **/*.*
+          files_ignore: docs/** # Alternatively using: `docs`
+      - name: Run
+        run: |
+          echo "Changes: ${{ steps.changed-files-excluded.outputs.any_changed == 'true' }}"
+      # - name: Install node-modules
+      #   run: yarn install --frozen-lockfile
+      # - name: Use shared Nx Cache
+      #   id: cache-nx
+      #   uses: actions/cache@v3
+      #   env:
+      #     CACHE_NAME: cache-nx
+      #   with:
+      #     path: ./node_modules/.cache/nx
+      #     key: ${{ runner.os }}-build-cache-${{ hashFiles('yarn.lock') }}-${{github.run_id}}
+      #     restore-keys: |
+      #       ${{ runner.os }}-build-cache-${{ hashFiles('yarn.lock') }}
+      # - name: build
+      #   run: yarn build
