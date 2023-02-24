@@ -10,64 +10,24 @@ jobs:
     steps:
       - name: Show context
         run: echo "${{toJson(github)}}"
-      - name: Check out repository
+      - name: Check out branch
         uses: actions/checkout@v3
-        with:
-          ref: gh-pages
-          fetch-depth: 2
-      - name: Delete staging for branch
-        run: |
-          echo 'Removing ./PR-${{github.event.number}}'
-          rm -rf ./PR-${{github.event.number}}
-          git remote set-url origin https://git:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
-          git config user.name github-actions-bot 
-          git config user.email support+actions@github.com
-          git add .
-          git commit -m "chore: Removed PR-${{github.event.number}}"
-          git push
-      - name: Delete Environment
-        uses: strumwolf/delete-deployment-environment@v2
-        with:
-          token: ${{ github.token }}
-          environment: PR-Preview
-          ref: ${{github.head_ref}}
-          onlyRemoveDeployments: true
-  build-pr:
-    if: github.event.action != 'closed'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Show context
-        run: echo "${{toJson(github)}}"
-      - name: Cancel previous runs
-        uses: styfle/cancel-workflow-action@0.11.0
-        with:
-          access_token: ${{ github.token }}
-      - name: Check out repository
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 2
       - uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: 16
+          cache: 'yarn'
       - name: Install node-modules
-        run: npm install
-      - name: Build
-        run: npm run build
-      - name: Publish demos
-        run: |
-          git remote set-url origin https://git:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
-          git config user.name github-actions-bot
-          git config user.email support+actions@github.com
-          npx gh-pages -d dist/test-pr-pipeline --dotfiles -e PR-${{github.event.number}}
+        run: yarn install --frozen-lockfile
+      - name: Use shared Nx Cache
+        id: cache-nx
+        uses: actions/cache@v3
         env:
-          GITHUB_TOKEN: ${{ github.token }}
-      - uses: chrnorm/deployment-action@v2
-        name: Create GitHub deployment
+          CACHE_NAME: cache-nx
         with:
-          ref: '${{github.head_ref}}'
-          token: '${{ github.token }}'
-          environment-url: https://telerik.github.io/kendo-design-system/PR-${{github.event.number}}
-          environment: 'PR-Preview'
-          initial-status: 'success'
-      - name: Cleanup
-        run: git clean -xdf
+          path: ./node_modules/.cache/nx
+          key: ${{ runner.os }}-build-nx-${{ hashFiles('yarn.lock') }}-${{github.event.number}}-${{ hashFiles('node_modules/.cache/nx/nxdeps.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-nx-${{ hashFiles('yarn.lock') }}-${{github.event.number}}
+            ${{ runner.os }}-build-nx-${{ hashFiles('yarn.lock') }}
+      - name: build
+        run: yarn build
