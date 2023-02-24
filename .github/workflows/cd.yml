@@ -9,8 +9,6 @@ jobs:
     steps:
       - name: Show context
         run: |
-          echo "${{github.sha}}"
-          echo "${{github.run_id}}"
           echo "${{toJson(github)}}"
       - name: Check out branch
         uses: actions/checkout@v3
