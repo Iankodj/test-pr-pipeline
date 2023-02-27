@@ -22,7 +22,10 @@ jobs:
         with:
           files: |
             **/*
-          files_ignore: docs
+          files_ignore: |
+            .github
+            docs
+            e2e
       - name: Run
         run: |
           echo "Changes: ${{ steps.no-docs-files.outputs.any_changed == 'true' }}"
