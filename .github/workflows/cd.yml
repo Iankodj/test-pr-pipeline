@@ -26,21 +26,23 @@ jobs:
             .github
             docs
             e2e
-      - name: Run
-        run: |
-          echo "Changes: ${{ steps.no-docs-files.outputs.any_changed == 'true' }}"
-          echo "List all the files that have changed: ${{ steps.no-docs-files.outputs.all_changed_files }}"
-      # - name: Install node-modules
-      #   run: yarn install --frozen-lockfile
-      # - name: Use shared Nx Cache
-      #   id: cache-nx
-      #   uses: actions/cache@v3
-      #   env:
-      #     CACHE_NAME: cache-nx
-      #   with:
-      #     path: ./node_modules/.cache/nx
-      #     key: ${{ runner.os }}-build-cache-${{ hashFiles('yarn.lock') }}-${{github.run_id}}
-      #     restore-keys: |
-      #       ${{ runner.os }}-build-cache-${{ hashFiles('yarn.lock') }}
-      # - name: build
-      #   run: yarn build
+      # - name: Run
+      #   run: |
+      #     echo "Changes: ${{ steps.no-docs-files.outputs.any_changed == 'true' }}"
+      #     echo "List all the files that have changed: ${{ steps.no-docs-files.outputs.all_changed_files }}"
+      - name: Install node-modules
+        run: yarn install --frozen-lockfile
+      - name: Use shared Nx Cache
+        id: cache-nx
+        uses: actions/cache@v3
+        env:
+          CACHE_NAME: cache-nx
+        with:
+          path: |
+            ./node_modules/.cache/nx
+            ./docs/cache
+          key: ${{ runner.os }}-build-cache-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-build-cache-${{ hashFiles('yarn.lock') }}
+      - name: build
+        run: yarn build
